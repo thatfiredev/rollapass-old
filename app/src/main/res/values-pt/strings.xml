@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Roll a Pass</string>
+    <string name="about">Sobre</string>
+    <string name="action_settings">Preferências</string>
+    <string name="add">Adicionar uma conta existente</string>
+    <string name="attempts">tentativas</string>
+    <string name="cancel">Cancelar</string>
+    <string name="copy">Copiar</string>
+    <string name="copy_confirmation">Copiado</string>
+    <string name="delete">Apagar</string>
+    <string name="delete_confirmation">Palavra-passe eliminada</string>
+    <string name="delete_prompt">Eliminar Palavra-passe?</string>
+    <string name="dismiss">Ignorar</string>
+    <string name="erase_confirmation">Palavras-passe eliminadas</string>
+    <string name="error">Este campo não pode estar vazio</string>
+    <string name="generate">Gerar</string>
+    <string name="hide">Esconder palavra-passe</string>
+    <string name="loading">Processando</string>
+    <string name="mail_body">Caro Rosário Pereira Fernandes,</string>
+    <string name="mail_error">Não existem aplicações de email</string>
+    <string name="mail_title">Contactar Desenvolvedor</string>
+    <string name="manage">Gerir</string>
+    <string name="master_pass">Definir palavra-passe mestre:</string>
+    <string name="master_pass2">Você precisará desta palavra-passe para gerir as suas palavras-passe. Mantenha segura e não conte a ninguém. Continuar?</string>
+    <string name="master_pass3">Palavra-passe mestre:</string>
+    <string name="no">Não</string>
+    <string name="nothing_found">Sem palavras-passe.</string>
+    <string name="ok">Ok</string>
+    <string name="pass_no_match">Palavras-passe não coincidem</string>
+    <string name="pass_wrong">Palavra-passe incorrecta</string>
+    <string name="password">Palavra-passe:</string>
+    <string name="password_exported">Palavras-passe exportadas</string>
+    <string name="passwordh">Palavra-passe</string>
+    <string name="preferences1">Tamanho da palavra-passe</string>
+    <string name="preferences2">Alterar palavra-passe</string>
+    <string name="preferences3">a palavra-passe que voce usa para abrir Roll a Pass</string>
+    <string name="preferences4">Apagar todos dados</string>
+    <string name="preferences5">depois de</string>
+    <string name="preferences6">Exportar palavras-passe</string>
+    <string name="preferences7">para um ficheiro .txt para voce ter uma cópia</string>
+    <string name="preferences8">Sobre</string>
+    <string name="repassword">Re-introduza Palavra-passe:</string>
+    <string name="repasswordh">Re-introduza Palavra-passe</string>
+    <string name="save_confirmation">Palavra-passe guardada</string>
+    <string name="show">Mostrar palavra-passe</string>
+    <string name="title_activity_loading">Loading</string>
+    <string name="title_activity_preferences">Preferências</string>
+    <string name="undo">Desfazer</string>
+    <string name="unmounted">Cartão de Memória não encontrado</string>
+    <string name="username">Nome de Utilizador (opcional)</string>
+    <string name="version">Versão 1.0</string>
+    <string name="warning">Aviso</string>
+    <string name="website">Website</string>
+    <string name="year">2015</string>
+    <string name="yes">Sim</string>
+    <string name="preparing">Preparando para o primeiro uso...</string>
+    <string-array name="attempts">
+        <item>Nunca</item>
+        <item>3 tentativas</item>
+        <item>5 tentativas</item>
+        <item>10 tentativas</item>
+    </string-array>
+</resources>

@@ -1,0 +1,69 @@
+<resources>
+    <string name="app_name">Roll a Pass</string>
+    <string name="version">Version 1.0</string>
+    <string name="year">2015</string>
+    <string name="about">About</string>
+    <string name="mail_title">Contact Developer</string>
+    <string name="mail_body">Dear Rosário Pereira Fernandes,</string>
+    <string name="mail_error">There are no mail clients available.</string>
+    <string name="password_exported">Passwords exported</string>
+    <string name="unmounted">No SD Card</string>
+    <string name="hello_world" translatable="false">Hello world!</string>
+    <string name="action_settings">Preferences</string>
+    <string name="generate">Roll</string>
+    <string name="manage">Manage</string>
+    <string name="password">Password:</string>
+    <string name="repassword">Password Confirmation:</string>
+    <string name="passwordh">Password</string>
+    <string name="repasswordh">Password Confirmation</string>
+    <string name="website">Website</string>
+    <string name="warning">Warning</string>
+    <string name="username">Username (optional)</string>
+    <string name="error">This field can\'t be empty</string>
+    <string name="show">Show Password</string>
+    <string name="hide">Hide Password</string>
+    <string name="delete">Delete</string>
+    <string name="copy">Copy to Clipboard</string>
+    <string name="undo">Undo</string>
+    <string name="delete_prompt">Delete password?</string>
+    <string name="delete_confirmation">Password deleted</string>
+    <string name="erase_confirmation">Passwords deleted</string>
+    <string name="copy_confirmation">Copied to clipboard</string>
+    <string name="save_confirmation">Password saved</string>
+    <string name="nothing_found">No saved passwords</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="cancel">Cancel</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="ok">Ok</string>
+    <string name="title_activity_preferences">Preferences</string>
+    <string name="preferences1">Password Length</string>
+    <string name="preferences2">Change Master Password</string>
+    <string name="preferences3">the one you use to launch Roll a Pass</string>
+    <string name="preferences4">Delete All Data</string>
+    <string name="preferences5">after </string>
+    <string name="preferences6">Export Saved Passwords</string>
+    <string name="preferences7">to a .txt file so you can keep a copy</string>
+    <string name="preferences8">About</string>
+    <string name="title_activity_loading">Loading</string>
+    <string name="loading">Loading</string>
+    <string name="attempts">attempts</string>
+    <string name="add">Add existing account</string>
+    <string name="preparing">Preparing for first run...</string>
+
+    <string-array name="attempts">
+        <item>Never</item>
+        <item>3 attempts</item>
+        <item>5 attempts</item>
+        <item>10 attempts</item>
+    </string-array>
+    <string name="title_activity_master_password" translatable="false">MasterPasswordActivity</string>
+
+    <!-- Master Password Activity-->
+    <string name="master_pass">Set a Master Password:</string>
+    <string name="master_pass2">You\'ll need to use this password to manage your saved passwords. Keep it safe and don\'t share with anyone. Continue?</string>
+    <string name="master_pass3">Master Password:</string>
+    <string name="pass_no_match">Passwords didn\'t match</string>
+    <string name="pass_wrong">Wrong Master Password</string>
+
+</resources>

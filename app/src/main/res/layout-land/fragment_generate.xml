@@ -1,0 +1,110 @@
+<!-- Layout for the Generate Fragment when in landscape mode -->
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:id="@+id/fl"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:weightSum="1"
+        tools:context=".ManageFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_weight="0.5"
+        android:gravity="center_horizontal|center_vertical">
+
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_layout_website"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/txtWebsite"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:minLines="1"
+            android:maxEms="5"
+            android:minEms="1"
+            android:inputType="textUri"
+            android:hint="@string/website" />
+
+    </android.support.design.widget.TextInputLayout>
+
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_layout_username"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/txtUsername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:minLines="1"
+            android:maxEms="5"
+            android:minEms="1"
+            android:inputType="textUri"
+            android:hint="@string/username" />
+
+    </android.support.design.widget.TextInputLayout>
+
+</LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="0.5"
+            android:gravity="center_horizontal|center_vertical"
+            tools:context=".ManageFragment">
+
+            <Button
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:text="@string/generate"
+                android:id="@+id/btnRoll"
+                android:layout_margin="16dp"
+                android:background="@color/yellow"
+                android:textColor="@color/white"
+                android:layout_gravity="center_horizontal" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_marginTop="10dp"
+                android:gravity="center_horizontal"
+                android:text="@string/password" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="as156d1a56f74a"
+                android:layout_margin="16dp"
+                android:id="@+id/txtPassword"
+                android:layout_gravity="center_horizontal" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:id="@+id/fab"
+        android:layout_gravity="bottom|end"
+        android:clickable="true"
+        android:layout_margin="16dp"
+        android:elevation="6dp"
+        android:src="@drawable/ic_save_white"
+        android:layout_height="wrap_content" />
+</android.support.design.widget.CoordinatorLayout>
