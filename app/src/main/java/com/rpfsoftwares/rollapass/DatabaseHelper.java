@@ -147,6 +147,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return accounts;
     }
 
+    //gets number of accounts stored on the database;
+    public int getAccountCount()
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery = "SELECT  * FROM " + TABLE;
+        Cursor c = db.rawQuery(selectQuery, null);
+        return c.getCount();
+    }
+
+
     //method to get the MasterPassword
     public String getMasterPassword() {
         SQLiteDatabase db = this.getReadableDatabase();

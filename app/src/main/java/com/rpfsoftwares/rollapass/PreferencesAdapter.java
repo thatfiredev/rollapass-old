@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class PreferencesAdapter extends BaseAdapter implements View.OnClickListener {
+public class PreferencesAdapter extends BaseAdapter {
     private Activity activity;
     private ArrayList data;
     private static LayoutInflater inflater=null;
@@ -64,11 +64,6 @@ public class PreferencesAdapter extends BaseAdapter implements View.OnClickListe
             holder.subtitle.setText(tempValues.getSubtitle());
             vi.setOnClickListener(new OnItemClickListener( position ));
         return vi;
-    }
-
-    @Override
-    public void onClick(View v) {
-        //Log.v("CustomAdapter", "=====Row button clicked=====");
     }
 
     /********* Called when Item click in ListView ************/

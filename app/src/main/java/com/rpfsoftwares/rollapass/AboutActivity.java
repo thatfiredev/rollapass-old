@@ -4,13 +4,19 @@ import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+
+import com.google.android.gms.common.GoogleApiAvailability;
 
 public class AboutActivity extends AppCompatActivity {
     private FloatingActionButton fab;
     private CoordinatorLayout cl;
+    private Button btnNotices;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,6 +25,7 @@ public class AboutActivity extends AppCompatActivity {
         //Setting the fab and Layout
         fab=(FloatingActionButton)findViewById(R.id.fab);
         cl=(CoordinatorLayout)findViewById(R.id.fl);
+        btnNotices=(Button)findViewById(R.id.btnNotices);
 
         //Timer used to show the fab after 500 milliseconds
         new Handler().postDelayed(new Runnable() {
@@ -42,6 +49,14 @@ public class AboutActivity extends AppCompatActivity {
                 } catch (android.content.ActivityNotFoundException e) {
                     Snackbar.make(cl,getString(R.string.mail_error),Snackbar.LENGTH_LONG).show();
                 }
+            }
+        });
+
+        btnNotices.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent openSource= new Intent(AboutActivity.this,LegalNoticesActivity.class);
+                startActivity(openSource);
             }
         });
     }

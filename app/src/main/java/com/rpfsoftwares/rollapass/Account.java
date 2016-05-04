@@ -2,31 +2,28 @@ package com.rpfsoftwares.rollapass;
 
 public class Account {
     private int id;
-    private String Website;
-    private String Username;
-    private String Password;
-
-    public Account() {
-    }
+    private String website;
+    private String username;
+    private String password;
 
     @Override
     public String toString() {
-        return Website+"    "+
-                Username+"    "+
-                Password+"    ";
+        return website +"    "+
+                username +"    "+
+                password +"    ";
     }
 
     public Account(int id, String website, String username, String password) {
         this.id = id;
-        Website = website;
-        Username = username;
-        Password = password;
+        this.website = website;
+        this.username = username;
+        this.password = password;
     }
 
     public Account(String website, String username, String password) {
-        Website = website;
-        Username = username;
-        Password = password;
+        this.website = website;
+        this.username = username;
+        this.password = password;
     }
 
     public int getId() {
@@ -38,26 +35,26 @@ public class Account {
     }
 
     public String getWebsite() {
-        return Website;
+        return website;
     }
 
     public void setWebsite(String website) {
-        Website = website;
+        this.website = website;
     }
 
     public String getUsername() {
-        return Username;
+        return username;
     }
 
     public void setUsername(String username) {
-        Username = username;
+        this.username = username;
     }
 
     public String getPassword() {
-        return Password;
+        return password;
     }
 
     public void setPassword(String password) {
-        Password = password;
+        this.password = password;
     }
 }

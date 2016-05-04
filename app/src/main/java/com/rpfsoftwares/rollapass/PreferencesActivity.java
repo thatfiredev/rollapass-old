@@ -2,16 +2,16 @@ package com.rpfsoftwares.rollapass;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,31 +20,44 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.drive.Drive;
+import com.google.android.gms.drive.DriveApi;
+import com.google.android.gms.drive.DriveContents;
+import com.google.android.gms.drive.DriveFolder;
+import com.google.android.gms.drive.MetadataChangeSet;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.DateFormat;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.zip.Inflater;
 
-
-public class PreferencesActivity extends ActionBarActivity {
-
+public class PreferencesActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
     private Toolbar mToolbar;
     private PreferencesAdapter adapter;
     private ListView list;
-    private PreferencesActivity CustomListView=null;
-    private ArrayList<PreferencesList> CustomListViewValuesArr= new ArrayList<PreferencesList>();
+    private PreferencesActivity customListView =null;
+    private ArrayList<PreferencesList> customListViewValuesArr = new ArrayList<PreferencesList>();
     private SharedPreferences pref;
     private Resources res;
     private DatabaseHelper db;
     private CoordinatorLayout fl;
     private EditText txtPassword;
     String []attempts;
+
+    //Used by the Drive API
+    private GoogleApiClient mGoogleApiClient;
+    private static final int RESOLVE_CONNECTION_REQUEST_CODE = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,38 +73,51 @@ public class PreferencesActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         pref = getSharedPreferences("com.rpfsoftwares.rollapass", MODE_PRIVATE);
 
-        CustomListView = this;
+        customListView = this;
         setListData();
         res =getResources();
         list= (ListView)findViewById(R.id.lstPreferences);
-        adapter=new PreferencesAdapter( CustomListView, CustomListViewValuesArr, res);
+        adapter=new PreferencesAdapter(customListView, customListViewValuesArr, res);
         list.setAdapter(adapter);
         MainActivity.askPass=false;
+
+        //Autorize Roll a Pass to use Google Drive
+        buildGoogleApiClient();
+    }
+
+    private void buildGoogleApiClient()
+    {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Drive.API)
+                .addScope(Drive.SCOPE_FILE)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
     }
 
     public void setListData()
     {
-        CustomListViewValuesArr.add(new PreferencesList(getResources().getString(R.string.preferences1),
+        customListViewValuesArr.add(new PreferencesList(getResources().getString(R.string.preferences1),
                 ""+pref.getInt("plength",8)));
-        CustomListViewValuesArr.add(new PreferencesList(getResources().getString(R.string.preferences2),
+        customListViewValuesArr.add(new PreferencesList(getResources().getString(R.string.preferences2),
                 getResources().getString(R.string.preferences3)));
 
         int attemp=pref.getInt("dattempts",3);
         if(attemp>999)
-            CustomListViewValuesArr.add(new PreferencesList(getResources().getString(R.string.preferences4),
+            customListViewValuesArr.add(new PreferencesList(getResources().getString(R.string.preferences4),
                     attempts[0]));
         else
-        CustomListViewValuesArr.add(new PreferencesList(getResources().getString(R.string.preferences4),
+        customListViewValuesArr.add(new PreferencesList(getResources().getString(R.string.preferences4),
                 getResources().getString(R.string.preferences5) + " "+attemp+ " "+getResources().getString(R.string.attempts)));
 
-        CustomListViewValuesArr.add(new PreferencesList(getResources().getString(R.string.preferences6),
+        customListViewValuesArr.add(new PreferencesList(getResources().getString(R.string.preferences6),
                 getResources().getString(R.string.preferences7)));
-        CustomListViewValuesArr.add(new PreferencesList(getResources().getString(R.string.preferences8),
+        customListViewValuesArr.add(new PreferencesList(getResources().getString(R.string.preferences8),
                 getResources().getString(R.string.version)));
     }
+
     public void onItemClick(int mPosition)
     {
-        PreferencesList tempValues = (PreferencesList ) CustomListViewValuesArr.get(mPosition);
         switch (mPosition)
         {
             case 0://Password Length
@@ -110,10 +136,9 @@ public class PreferencesActivity extends ActionBarActivity {
                                 SharedPreferences.Editor edit = pref.edit();
                                 edit.putInt("plength", Integer.parseInt(tamanhos[which]));
                                 edit.commit();
-                                //Log.e("cumprimento definido", "" + pref.getInt("plength", 8));
                                 MainActivity.length= Integer.parseInt(tamanhos[which]);
-                                CustomListViewValuesArr.get(0).setSubtitle(tamanhos[which]);
-                                adapter=new PreferencesAdapter( CustomListView, CustomListViewValuesArr, res);
+                                customListViewValuesArr.get(0).setSubtitle(tamanhos[which]);
+                                adapter=new PreferencesAdapter(customListView, customListViewValuesArr, res);
                                 list.setAdapter(adapter);
                             }
                         })
@@ -170,10 +195,10 @@ public class PreferencesActivity extends ActionBarActivity {
                                         edit.putInt("dattempts", att[which]);
                                         edit.commit();
                                         if(which==0)
-                                            CustomListViewValuesArr.get(2).setSubtitle(attempts[which]);
+                                            customListViewValuesArr.get(2).setSubtitle(attempts[which]);
                                         else
-                                            CustomListViewValuesArr.get(2).setSubtitle(getResources().getString(R.string.preferences5) + " "+attempts[which]);
-                                        adapter=new PreferencesAdapter( CustomListView, CustomListViewValuesArr, res);
+                                            customListViewValuesArr.get(2).setSubtitle(getResources().getString(R.string.preferences5) + " "+attempts[which]);
+                                        adapter=new PreferencesAdapter(customListView, customListViewValuesArr, res);
                                         list.setAdapter(adapter);
                                     }
                                 })
@@ -190,14 +215,29 @@ public class PreferencesActivity extends ActionBarActivity {
                         .setPositiveButton(getResources().getString(R.string.ok),new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                //Log.e("Pass ",txtPassword.getText().toString());
                                 db = new DatabaseHelper(PreferencesActivity.this);
-                                String Master=db.getMasterPassword();
-                                //Log.e("Pass set",Master);
-                                if(txtPassword.getText().toString().equals(Master))
+                                String master=db.getMasterPassword();
+                                if(txtPassword.getText().toString().equals(master))
                                 {
+                                    String []optionsArray=getResources().getStringArray(R.array.export_options);
+                                    ArrayAdapter optionsAdapter= new ArrayAdapter<String>(PreferencesActivity.this,
+                                            R.layout.list_black_text,R.id.list_content,optionsArray);
+                                    new AlertDialog.Builder(PreferencesActivity.this)
+                                            .setAdapter(optionsAdapter, new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    if(which==0)
+                                                        exportSavedPasswords();
+                                                    else
+                                                    {
+                                                        mGoogleApiClient.connect();
+                                                        Drive.DriveApi.newDriveContents(mGoogleApiClient)
+                                                                .setResultCallback(contentsCallback);
+                                                    }
+                                                }
+                                            })
+                                            .show();
                                     dialog.dismiss();
-                                    exportSavedPasswords();
                                 }
                                 else
                                 {
@@ -221,7 +261,7 @@ public class PreferencesActivity extends ActionBarActivity {
         }
     }
 
-
+    //Export Passwords to Internal Storage
     public void exportSavedPasswords(){
         if(Environment.getExternalStorageState().equalsIgnoreCase("mounted"))
         {
@@ -237,8 +277,7 @@ public class PreferencesActivity extends ActionBarActivity {
                 writer.flush();
                 writer.close();
                 db.closeDB();
-                Snackbar.make(fl, getString(R.string.password_exported), Snackbar.LENGTH_LONG);
-                //Log.e("Erro","Exported");
+                Snackbar.make(fl, getString(R.string.password_exported), Snackbar.LENGTH_LONG).show();
             } catch (IOException e) {
                 e.printStackTrace();
                 Snackbar.make(fl, e.getMessage(), Snackbar.LENGTH_LONG).show();
@@ -259,7 +298,116 @@ public class PreferencesActivity extends ActionBarActivity {
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
+    }
+
+    //Used to export passwords to Drive
+    ResultCallback<DriveApi.DriveContentsResult> contentsCallback = new
+            ResultCallback<DriveApi.DriveContentsResult>() {
+                @Override
+                public void onResult(DriveApi.DriveContentsResult result) {
+                    if (!result.getStatus().isSuccess()) {
+                        new AlertDialog.Builder(PreferencesActivity.this)
+                                .setMessage("Connection wasnt successful: "+result.getStatus().getStatusMessage())
+                                .setCancelable(true)
+                                .show();
+                        return;
+                    }
+                    final DriveContents driveContents=result.getDriveContents();
+
+                    //Perform I/O off the UI thread
+                    new Thread() {
+                        @Override
+                        public void run()
+                        {
+                            OutputStream outputStream = driveContents.getOutputStream();
+                            Writer writer =  new OutputStreamWriter(outputStream);
+
+                            db= new DatabaseHelper(PreferencesActivity.this);
+                            try
+                            {
+                                writer.write(db.export());
+                                writer.flush();
+                                writer.close();
+                            }
+                            catch(IOException e)
+                            {
+                                Log.e("Couldn't Export",e.getMessage());
+                            }
+                            db.closeDB();
+
+                            MetadataChangeSet metadataChangeSet = new MetadataChangeSet.Builder()
+                                    .setTitle("RAP_"+new SimpleDateFormat(getString(R.string.dateformat)).format(new Date())+".txt")
+                                    .setViewed(false)
+                                    .setMimeType("text/plain")
+                                    .build();
+
+                            //create file on root folder
+                            Drive.DriveApi.getRootFolder(mGoogleApiClient)
+                                    .createFile(mGoogleApiClient, metadataChangeSet, driveContents)
+                                    .setResultCallback(fileCallback);
+                        }
+                    }.start();
+                }
+            };
+
+
+    final ResultCallback<DriveFolder.DriveFileResult> fileCallback = new
+            ResultCallback<DriveFolder.DriveFileResult>() {
+                @Override
+                public void onResult(DriveFolder.DriveFileResult result) {
+                    if (!result.getStatus().isSuccess())
+                    {
+                        Snackbar.make(fl, getString(R.string.password_not_exported), Snackbar.LENGTH_LONG).show();
+                        return;
+                    }
+                    Snackbar.make(fl, getString(R.string.password_exported), Snackbar.LENGTH_LONG).show();
+                    }
+                };
+
+    @Override
+    protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+        switch (requestCode) {
+            case RESOLVE_CONNECTION_REQUEST_CODE:
+                if (resultCode == RESULT_OK) {
+                    mGoogleApiClient.connect();
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        if (connectionResult.hasResolution()) {
+            try {
+                connectionResult.startResolutionForResult(this, RESOLVE_CONNECTION_REQUEST_CODE);
+            } catch (IntentSender.SendIntentException e) {
+                // Unable to resolve, message user appropriately
+                new AlertDialog.Builder(PreferencesActivity.this)
+                        .setMessage("IntentSender "+e.getMessage())
+                        .setCancelable(true)
+                        .show();
+            }
+        } else {
+            GoogleApiAvailability.getInstance().getErrorDialog(this, connectionResult.getErrorCode(), 0).show();
+        }
+    }
+
+    //Disconnect when the Activity is no longer visible to the user
+    @Override
+    protected void onPause() {
+        if(mGoogleApiClient!=null)
+            mGoogleApiClient.disconnect();
+        super.onPause();
     }
 }

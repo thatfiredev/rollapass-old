@@ -1,7 +1,6 @@
 package com.rpfsoftwares.rollapass;
 
 import android.app.Activity;
-import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -20,7 +19,7 @@ import android.widget.TextView;
 
 public class GenerateFragment extends Fragment {
 
-    public static FloatingActionButton FAB;
+    public static FloatingActionButton fab;
     private TextView txtPassword;
     public static EditText txtWebsite,txtUsername;
     private TextInputLayout inputWebsite,inputUsername;
@@ -45,7 +44,7 @@ public class GenerateFragment extends Fragment {
 
         //Assigning the views
         fl=(CoordinatorLayout)rootView.findViewById(R.id.fl);
-        FAB = (FloatingActionButton) rootView.findViewById(R.id.fab);
+        fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
         txtPassword=(TextView)rootView.findViewById(R.id.txtPassword);
         txtWebsite=(EditText)rootView.findViewById(R.id.txtWebsite);
         txtUsername=(EditText)rootView.findViewById(R.id.txtUsername);
@@ -57,9 +56,9 @@ public class GenerateFragment extends Fragment {
 
         half=length/2; //half the length that has been set by the user
 
-        FAB.hide();//hide the FloatingActionButton
-        //Set FAB's OnClick Listener
-        FAB.setOnClickListener(new View.OnClickListener() {
+        fab.hide();//hide the FloatingActionButton
+        //Set fab's OnClick Listener
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Create the Account
@@ -70,30 +69,29 @@ public class GenerateFragment extends Fragment {
                 ManageFragment.rv.setAdapter(new RVAdapter(db.read(), ManageFragment.rv));
                 db.closeDB(); //Close the database connection
 
-                final Snackbar a = Snackbar.make(fl, getString(R.string.save_confirmation), Snackbar.LENGTH_SHORT);
-                a.show(); //Show the confirmation snackbar
+                Snackbar.make(fl, getString(R.string.save_confirmation), Snackbar.LENGTH_SHORT).show(); //Show the confirmation snackbar
 
                 //Reset the layout
                 txtWebsite.setText("");
                 txtUsername.setText("");
-                gerarPassword();
+                generatePassword();
                 inputWebsite.setErrorEnabled(false);
             }
         });
         btnRoll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                gerarPassword();
+                generatePassword();
             }
         });
         txtWebsite.addTextChangedListener(new MyTextWatcher(txtWebsite,inputWebsite));
 
-        gerarPassword();//Generate first password
+        generatePassword();//Generate first password
 
         return rootView;
     }
 
-    private void gerarPassword() //method to generate a random password
+    private void generatePassword() //method to generate a random password
     {
         String password=db.getWord(getRandomLocation()); //get the first word
 
@@ -143,7 +141,7 @@ public class GenerateFragment extends Fragment {
     public char getRandomChar(int firstRoll, int secondRoll,int thirdRoll)
     {
         char[][] a =new char[6][6];
-        char retorno=' ';
+        char returnChar=' ';
         if(firstRoll==1 || firstRoll==2)
         {
         a[0][0]='A';a[0][1]='B';a[0][2]='C';a[0][3]='D';a[0][4]='E';a[0][5]='F';
@@ -169,27 +167,22 @@ public class GenerateFragment extends Fragment {
         a[4][0]='<';a[4][1]='>';a[4][2]='/';a[4][3]='?';a[4][4]='.';a[4][5]=',';
         a[5][0]=' ';a[5][1]=' ';a[5][2]=' ';a[5][3]=' ';a[5][4]=' ';a[5][5]=' ';
         }
-        retorno=a[thirdRoll-1][secondRoll-1];
+        returnChar=a[thirdRoll-1][secondRoll-1];
 
-        while(retorno==' ')
+        while(returnChar==' ')
         {
             thirdRoll=rollDice();
             secondRoll=rollDice();
-            retorno = a[thirdRoll-1][secondRoll-1];
+            returnChar = a[thirdRoll-1][secondRoll-1];
         }
 
-        return retorno;
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+        return returnChar;
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        FAB.hide();
+        fab.hide();
     }
 
     private class MyTextWatcher implements TextWatcher {
@@ -213,11 +206,11 @@ public class GenerateFragment extends Fragment {
                 //view.getBackground().clearColorFilter();
                 inputLayout.setError(getResources().getString(R.string.error));
                 view.requestFocus();
-                FAB.hide();
+                fab.hide();
             } else {
-                    view.getBackground().setColorFilter(getResources().getColor(R.color.yellow),PorterDuff.Mode.SRC_IN);
+                    view.getBackground().setColorFilter(getResources().getColor(R.color.yellow), PorterDuff.Mode.SRC_IN);
                     inputLayout.setErrorEnabled(false);
-                    FAB.show();
+                    fab.show();
                 }
             }
         }
