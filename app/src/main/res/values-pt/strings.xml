@@ -26,11 +26,11 @@
     <string name="master_pass3">Palavra-passe mestre:</string>
     <string name="no">Não</string>
     <string name="nothing_found">Sem palavras-passe.</string>
-    <string name="ok">Ok</string>
     <string name="pass_no_match">Palavras-passe não coincidem</string>
     <string name="pass_wrong">Palavra-passe incorrecta</string>
     <string name="password">Palavra-passe:</string>
     <string name="password_exported">Palavras-passe exportadas</string>
+    <string name="password_not_exported">Não foi possível exportar</string>
     <string name="passwordh">Palavra-passe</string>
     <string name="preferences1">Tamanho da palavra-passe</string>
     <string name="preferences2">Alterar palavra-passe</string>
@@ -44,15 +44,14 @@
     <string name="repasswordh">Re-introduza Palavra-passe</string>
     <string name="save_confirmation">Palavra-passe guardada</string>
     <string name="show">Mostrar palavra-passe</string>
-    <string name="title_activity_loading">Loading</string>
+    <string name="title_activity_loading">Carregando</string>
     <string name="title_activity_preferences">Preferências</string>
     <string name="undo">Desfazer</string>
     <string name="unmounted">Cartão de Memória não encontrado</string>
     <string name="username">Nome de Utilizador (opcional)</string>
-    <string name="version">Versão 1.0</string>
+    <string name="version">Versão 1.1</string>
     <string name="warning">Aviso</string>
     <string name="website">Website</string>
-    <string name="year">2015</string>
     <string name="yes">Sim</string>
     <string name="preparing">Preparando para o primeiro uso...</string>
     <string-array name="attempts">
@@ -61,4 +60,11 @@
         <item>5 tentativas</item>
         <item>10 tentativas</item>
     </string-array>
+
+    <string-array name="export_options">
+        <item>Memória Local</item>
+        <item>Google Drive</item>
+    </string-array>
+    <string name="title_activity_validate_password">Palavra-passe mestre</string>
+    <string name="dateformat">ddMMyyyy_HH:mm</string>
 </resources>

@@ -62,7 +62,6 @@ card_view:cardCornerRadius="4dp">
             android:layout_height="wrap_content">
 
         <ImageView
-            style="?android:attr/buttonStyleSmall"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_margin="8dp"
@@ -73,7 +72,6 @@ card_view:cardCornerRadius="4dp">
             android:id="@+id/btnShow" />
 
         <ImageView
-            style="?android:attr/buttonStyleSmall"
             android:src="@drawable/ic_delete"
             android:elevation="0dp"
             android:layout_width="24dp"
@@ -84,7 +82,6 @@ card_view:cardCornerRadius="4dp">
             android:id="@+id/btnDelete"/>
 
             <ImageView
-                style="?android:attr/buttonStyleSmall"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_margin="8dp"

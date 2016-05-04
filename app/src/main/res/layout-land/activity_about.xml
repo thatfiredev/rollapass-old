@@ -56,6 +56,17 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/year"
         android:id="@+id/textView3"/>
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:background="@android:color/transparent"
+        android:textColor="@color/yellow700"
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="LEGAL NOTICES"
+        android:id="@+id/btnNotices"/>
+
 </LinearLayout>
     </LinearLayout>
 
@@ -67,7 +78,7 @@
         android:layout_margin="16dp"
         android:elevation="6dp"
         android:visibility="gone"
-        android:src="@drawable/ic_contact_mail_white"
+        android:src="@drawable/ic_contact_mail_white_36dp"
         android:layout_height="wrap_content" />
 
 </android.support.design.widget.CoordinatorLayout>

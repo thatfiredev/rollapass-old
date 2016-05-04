@@ -1,12 +1,13 @@
 <resources>
     <string name="app_name">Roll a Pass</string>
-    <string name="version">Version 1.0</string>
-    <string name="year">2015</string>
+    <string name="version">Version 1.1</string>
+    <string name="year" translatable="false">2015-2016</string>
     <string name="about">About</string>
     <string name="mail_title">Contact Developer</string>
     <string name="mail_body">Dear Rosário Pereira Fernandes,</string>
     <string name="mail_error">There are no mail clients available.</string>
     <string name="password_exported">Passwords exported</string>
+    <string name="password_not_exported">Couldn\'t export passwords</string>
     <string name="unmounted">No SD Card</string>
     <string name="hello_world" translatable="false">Hello world!</string>
     <string name="action_settings">Preferences</string>
@@ -35,7 +36,7 @@
     <string name="no">No</string>
     <string name="cancel">Cancel</string>
     <string name="dismiss">Dismiss</string>
-    <string name="ok">Ok</string>
+    <string name="ok" translatable="false">Ok</string>
     <string name="title_activity_preferences">Preferences</string>
     <string name="preferences1">Password Length</string>
     <string name="preferences2">Change Master Password</string>
@@ -57,6 +58,12 @@
         <item>5 attempts</item>
         <item>10 attempts</item>
     </string-array>
+
+    <string-array name="export_options">
+        <item>Phone Storage</item>
+        <item>Google Drive</item>
+    </string-array>
+
     <string name="title_activity_master_password" translatable="false">MasterPasswordActivity</string>
 
     <!-- Master Password Activity-->
@@ -65,5 +72,8 @@
     <string name="master_pass3">Master Password:</string>
     <string name="pass_no_match">Passwords didn\'t match</string>
     <string name="pass_wrong">Wrong Master Password</string>
+    <string name="title_activity_validate_password">Master Password</string>
+    <string name="dateformat">yyyyMMdd_HH:mm</string>
+    <string name="title_activity_legal_notices" translatable="false">LEGAL NOTICES</string>
 
 </resources>
