@@ -2,26 +2,16 @@ package com.rpfsoftwares.rollapass;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
-import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -63,7 +53,7 @@ public class LoadingActivity extends ActionBarActivity {
                 is = getResources().openRawResource(R.raw.db);
 
             InputStreamReader inputStreamReader = new InputStreamReader(is);
-            new CriarTabelas(db,inputStreamReader,this).execute();//call the AsyncTask to insert the words on the SQLite Database
+            new CreateTables(db,inputStreamReader,this).execute();//call the AsyncTask to insert the words on the SQLite Database
 
             // it's not the first time anymore
             SharedPreferences.Editor edit = pref.edit();
@@ -72,7 +62,7 @@ public class LoadingActivity extends ActionBarActivity {
         }
         else
         {
-            int duracao = 1500;
+            int duration = 1500;
             //Show the app logo for 1500 milliseconds before loading the Main Activity
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -81,7 +71,7 @@ public class LoadingActivity extends ActionBarActivity {
                     startActivity(i);
                     finish();
                 }
-            }, duracao);
+            }, duration);
             db.closeDB();
         }
 
@@ -104,7 +94,7 @@ public class LoadingActivity extends ActionBarActivity {
     }
 
     //AsyncTask to insert the words on the SQLite Database
-    public class CriarTabelas extends AsyncTask<String, Integer, String> {
+    public class CreateTables extends AsyncTask<String, Integer, String> {
         private DatabaseHelper db;
         private InputStreamReader is;
         private Context c;
@@ -112,7 +102,7 @@ public class LoadingActivity extends ActionBarActivity {
         private ProgressDialog progressDialog;
 
         //Constructor
-        public CriarTabelas(DatabaseHelper db,InputStreamReader is,Context c)
+        public CreateTables(DatabaseHelper db, InputStreamReader is, Context c)
         {
             this.db=db;
             this.is=is;
@@ -134,22 +124,22 @@ public class LoadingActivity extends ActionBarActivity {
         {
             BufferedReader bufferedReader = new BufferedReader(is);
             int id,i=0;
-            String word,linha;
-            String []elementos;
+            String word, line;
+            String [] elements;
             db.criarTabelas(); //create the tables
             db.setMaster(); //create the default Master Password ('12345')
             try {
-                linha = bufferedReader.readLine();
+                line = bufferedReader.readLine();
 
                 //read the words from the raw .txt file and
                 //insert it on the SQLite Table
-                while (linha != null && !linha.equals(""))
+                while (line != null && !line.equals(""))
                 {
-                    elementos = linha.split(" ");
-                    id = Integer.parseInt(elementos[0]);
-                    word = elementos[1];
+                    elements = line.split(" ");
+                    id = Integer.parseInt(elements[0]);
+                    word = elements[1];
                     db.createWord(id, word);
-                    linha = bufferedReader.readLine();
+                    line = bufferedReader.readLine();
 
                     publishProgress((i*100)/7776); //publish progress to update the dialog's percentage
 

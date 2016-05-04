@@ -1,31 +1,20 @@
 package com.rpfsoftwares.rollapass;
 
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -33,100 +22,45 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
     private Toolbar mToolbar;
-
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private ViewPagerAdapter adapter;
-
     public static Snackbar a;
-
-    SharedPreferences pref;
-
+    private SharedPreferences pref;
     public static int length;
-    private EditText txtPassword;
-    private DatabaseHelper db;
-
-    int tentativas=0;
-
     public static boolean askPass=true;
-
-    private boolean isDialogShowing=false;
 
     @Override
     protected void onResume() {
         super.onResume();
+        //Ask for password when the Activity becomes visible again
         if(askPass)
-        {
-            mos();
-        }
-        else
-        {
-            askPass=true;
-        }
+            askPassword();
     }
 
     @Override
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     protected void onPause() {
         super.onPause();
-        if(isDialogShowing)
-            askPass=false;
-        else
-            askPass=true;
+        //Tell the app to ask for a password when the Activity becomes visible again
+        boolean isChangingConfigurations;
+        isChangingConfigurations=!isChangingConfigurations();
+        isChangingConfigurations=false;
+
+        if(!isChangingConfigurations())
+            askPass = true;
     }
 
-    //dialog to ask for the Master Password
-    private void mos()
+    /**
+     * method to start Activity to Validate the Master Password
+     */
+    private void askPassword()
     {
-        LayoutInflater inflater = getLayoutInflater();
-        View dialogView=inflater.inflate(R.layout.edittext,null);
-        txtPassword=(EditText)dialogView.findViewById(R.id.txtMasterPassword);
-        new AlertDialog.Builder(MainActivity.this)
-                .setMessage(R.string.master_pass3)
-                .setView(dialogView)
-                .setCancelable(false)
-                .setPositiveButton(getResources().getString(R.string.ok),new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        db = new DatabaseHelper(MainActivity.this);
-                        String Master=db.getMasterPassword();
-                        if(txtPassword.getText().toString().equals(Master))
-                        {
-                            dialog.dismiss();
-                            isDialogShowing=false;
-                        }
-                        else
-                        {
-                            tentativas++;
-                            if(tentativas>=pref.getInt("dattempts",3))
-                            {
-                                for(int i=0;i<7776;i++)
-                                    db.delete(i);
-                                Toast.makeText(MainActivity.this,getString(R.string.erase_confirmation),Toast.LENGTH_LONG);
-                                db.closeDB();
-                                isDialogShowing=false;
-                                finish();
-                            }
-                            else
-                            {
-                                db.closeDB();
-                                mos();
-                            }
-                        }
-                    }
-                })
-                .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        isDialogShowing=false;
-                        dialog.dismiss();
-                        finish();
-                    }
-                })
-                .show();
-                isDialogShowing=true;
+        Intent vp= new Intent(this, ValidatePasswordActivity.class);
+        startActivityForResult(vp, ValidatePasswordActivity.VALIDATE_PASSWORD_REQUEST);
+        askPass=!askPass;
     }
 
     @Override
@@ -134,8 +68,12 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Ask for Password
+        if(askPass)
+            askPassword();
+
         pref = getSharedPreferences("com.rpfsoftwares.rollapass", MODE_PRIVATE); //get the Shared Preferences
-        boolean pvez=pref.getBoolean("pvez",true); //check if it's the first time running the app
+        boolean pvez=pref.getBoolean("pvez",true); //check if it's the first time the user runs the app
 
         length=pref.getInt("plength",8); //get chosen length
 
@@ -155,7 +93,7 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onPageSelected(int position) {
                 if(position==1) {
-                    GenerateFragment.FAB.hide();
+                    GenerateFragment.fab.hide();
                     if (!ManageFragment.FAB.isShown()) {
                         ManageFragment.FAB.show();
                     }
@@ -163,11 +101,11 @@ public class MainActivity extends ActionBarActivity {
                 else
                 {
                     ManageFragment.FAB.hide();
-                    if(GenerateFragment.txtWebsite.getText().toString().trim().isEmpty() && GenerateFragment.FAB.isShown())
-                        GenerateFragment.FAB.hide();
+                    if(GenerateFragment.txtWebsite.getText().toString().trim().isEmpty() && GenerateFragment.fab.isShown())
+                        GenerateFragment.fab.hide();
                     else
-                    if(!GenerateFragment.txtWebsite.getText().toString().trim().isEmpty() && !GenerateFragment.FAB.isShown())
-                        GenerateFragment.FAB.show();
+                    if(!GenerateFragment.txtWebsite.getText().toString().trim().isEmpty() && !GenerateFragment.fab.isShown())
+                        GenerateFragment.fab.show();
                 }
             }
 
@@ -184,18 +122,19 @@ public class MainActivity extends ActionBarActivity {
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
-
-        InputStream is = getResources().openRawResource(R.raw.db);
-        InputStreamReader inputStreamReader = new InputStreamReader(is);
-        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-
-        int id;
-        String word,linha;
-        String []elementos;
-
+        //If it's the first time the user runs the app
         if(pvez)
         {
-            try {
+            InputStream is = getResources().openRawResource(R.raw.db);
+            InputStreamReader inputStreamReader = new InputStreamReader(is);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+            int id;
+            String word,linha;
+            String []elementos;
+
+            try
+            {
                 linha = bufferedReader.readLine();
                 while (linha != null && !linha.equals(""))
                 {
@@ -236,6 +175,21 @@ public class MainActivity extends ActionBarActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode)
+        {
+            case ValidatePasswordActivity.VALIDATE_PASSWORD_REQUEST:
+            {
+                if(resultCode==RESULT_OK)
+                    askPass=false;//Stay on App if the password is correct
+                else
+                    finish(); //Close the App if the user dismissed the ValidatePasswordActivity
+                break;
+            }
+        }
     }
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
