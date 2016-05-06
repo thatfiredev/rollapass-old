@@ -41,15 +41,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     protected void onPause() {
         super.onPause();
         //Tell the app to ask for a password when the Activity becomes visible again
         boolean isChangingConfigurations;
-        isChangingConfigurations=!isChangingConfigurations();
-        isChangingConfigurations=false;
+        if(Build.VERSION.SDK_INT>Build.VERSION_CODES.HONEYCOMB)
+            isChangingConfigurations=!isChangingConfigurations();//this method was implemented on API 11
+        else
+            isChangingConfigurations=false;
 
-        if(!isChangingConfigurations())
+        if(!isChangingConfigurations)
             askPass = true;
     }
 
