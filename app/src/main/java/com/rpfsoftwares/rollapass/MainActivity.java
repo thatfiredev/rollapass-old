@@ -1,6 +1,5 @@
 package com.rpfsoftwares.rollapass;
 
-import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -29,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
     private ViewPagerAdapter adapter;
     public static Snackbar a;
     private SharedPreferences pref;
-    public static int length;
     public static boolean askPass=true;
 
     @Override
@@ -46,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         //Tell the app to ask for a password when the Activity becomes visible again
         boolean isChangingConfigurations;
         if(Build.VERSION.SDK_INT>Build.VERSION_CODES.HONEYCOMB)
-            isChangingConfigurations=!isChangingConfigurations();//this method was implemented on API 11
+            isChangingConfigurations=isChangingConfigurations();//this method was implemented on API 11
         else
             isChangingConfigurations=false;
 
@@ -76,8 +74,6 @@ public class MainActivity extends AppCompatActivity {
         pref = getSharedPreferences("com.rpfsoftwares.rollapass", MODE_PRIVATE); //get the Shared Preferences
         boolean pvez=pref.getBoolean("pvez",true); //check if it's the first time the user runs the app
 
-        length=pref.getInt("plength",8); //get chosen length
-
         DatabaseHelper db = new DatabaseHelper(MainActivity.this); //open the database connection
 
         //load the toolbar
@@ -95,13 +91,13 @@ public class MainActivity extends AppCompatActivity {
             public void onPageSelected(int position) {
                 if(position==1) {
                     GenerateFragment.fab.hide();
-                    if (!ManageFragment.FAB.isShown()) {
-                        ManageFragment.FAB.show();
+                    if (!ManageFragment.fab.isShown()) {
+                        ManageFragment.fab.show();
                     }
                 }
                 else
                 {
-                    ManageFragment.FAB.hide();
+                    ManageFragment.fab.hide();
                     if(GenerateFragment.txtWebsite.getText().toString().trim().isEmpty() && GenerateFragment.fab.isShown())
                         GenerateFragment.fab.hide();
                     else

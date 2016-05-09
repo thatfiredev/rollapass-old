@@ -1,6 +1,7 @@
 package com.rpfsoftwares.rollapass;
 
-import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -26,7 +27,9 @@ public class GenerateFragment extends Fragment {
     private Button btnRoll;
     private DatabaseHelper db;
     private CoordinatorLayout fl;
-    private int length=MainActivity.length,half;
+    private int length, half;
+    private Object clipboard;
+    private SharedPreferences prefs;
 
     public GenerateFragment() {
     }
@@ -54,22 +57,30 @@ public class GenerateFragment extends Fragment {
 
         db = new DatabaseHelper(getContext()); //Open the Database Connection
 
+        prefs= getActivity().getSharedPreferences("com.rpfsoftwares.rollapass",
+                getActivity().MODE_PRIVATE);
+        length=prefs.getInt("plength", 8); //get chosen length
+
         half=length/2; //half the length that has been set by the user
 
         fab.hide();//hide the FloatingActionButton
+        clipboard =getActivity().
+                getSystemService(Context.CLIPBOARD_SERVICE); //getting the clipboard service
         //Set fab's OnClick Listener
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Create the Account
-                Account account = new Account(txtWebsite.getText().toString(), txtUsername.getText().toString(), txtPassword.getText().toString());
+                Account account = new Account(txtWebsite.getText().toString(),
+                        txtUsername.getText().toString(), txtPassword.getText().toString());
                 db.create(account);
 
                 //Update the Manage's List
-                ManageFragment.rv.setAdapter(new RVAdapter(db.read(), ManageFragment.rv));
+                ManageFragment.rv.setAdapter(new RVAdapter(db.read(), ManageFragment.rv, clipboard));
                 db.closeDB(); //Close the database connection
 
-                Snackbar.make(fl, getString(R.string.save_confirmation), Snackbar.LENGTH_SHORT).show(); //Show the confirmation snackbar
+                Snackbar.make(fl, getString(R.string.save_confirmation), Snackbar.LENGTH_SHORT)
+                        .show(); //Show the confirmation snackbar
 
                 //Reset the layout
                 txtWebsite.setText("");
@@ -100,11 +111,15 @@ public class GenerateFragment extends Fragment {
             if(length==8)
                 password = db.getWord(getRandomLocation()) + db.getWord(getRandomLocation());
             else if(length==12)
-                password = db.getWord(getRandomLocation()) + db.getWord(getRandomLocation()) + db.getWord(getRandomLocation());
+                password = db.getWord(getRandomLocation()) + db.getWord(getRandomLocation()) +
+                        db.getWord(getRandomLocation());
             else if(length==16)
-                password = db.getWord(getRandomLocation()) + db.getWord(getRandomLocation()) + db.getWord(getRandomLocation())+ db.getWord(getRandomLocation());
+                password = db.getWord(getRandomLocation()) + db.getWord(getRandomLocation()) +
+                        db.getWord(getRandomLocation())+ db.getWord(getRandomLocation());
             else
-                password = db.getWord(getRandomLocation()) + db.getWord(getRandomLocation()) + db.getWord(getRandomLocation())+ db.getWord(getRandomLocation())+ db.getWord(getRandomLocation());
+                password = db.getWord(getRandomLocation()) + db.getWord(getRandomLocation()) +
+                        db.getWord(getRandomLocation())+ db.getWord(getRandomLocation()) +
+                        db.getWord(getRandomLocation());
         }
 
         //if the password is too short, add a few random characters on the end
@@ -187,11 +202,11 @@ public class GenerateFragment extends Fragment {
 
     private class MyTextWatcher implements TextWatcher {
 
-        private EditText view;
+        private EditText editText;
         private TextInputLayout inputLayout;
 
-        private MyTextWatcher(EditText view,TextInputLayout inputLayout) {
-            this.view = view;
+        private MyTextWatcher(EditText editText, TextInputLayout inputLayout) {
+            this.editText = editText;
             this.inputLayout=inputLayout;
         }
 
@@ -202,13 +217,14 @@ public class GenerateFragment extends Fragment {
         }
 
         public void afterTextChanged(Editable editable) {
-            if (view.getText().toString().trim().isEmpty()) {
+            if (editText.getText().toString().trim().isEmpty()) {
                 //view.getBackground().clearColorFilter();
                 inputLayout.setError(getResources().getString(R.string.error));
-                view.requestFocus();
+                editText.requestFocus();
                 fab.hide();
             } else {
-                    view.getBackground().setColorFilter(getResources().getColor(R.color.yellow), PorterDuff.Mode.SRC_IN);
+                    editText.getBackground().setColorFilter(getResources().getColor(R.color.yellow),
+                            PorterDuff.Mode.SRC_IN);
                     inputLayout.setErrorEnabled(false);
                     fab.show();
                 }

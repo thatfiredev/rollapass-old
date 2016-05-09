@@ -17,25 +17,13 @@ import java.util.List;
 public class RVAdapter extends RecyclerView.Adapter<RVAdapter.GameViewHolder>{
     List<Account> accounts;
     RecyclerView rv;
-    Object a;
+    Object clipboard;
 
-    public RVAdapter(List<Account> accounts,RecyclerView rv)
+    public RVAdapter(List<Account> accounts, RecyclerView rv, Object clipboard)
     {
         this.accounts=accounts;
         this.rv=rv;
-    }
-
-
-    public RVAdapter(List<Account> accounts,RecyclerView rv,Object a)
-    {
-        this.accounts=accounts;
-        this.rv=rv;
-        this.a=a;
-    }
-
-    public RVAdapter(List<Account> accounts)
-    {
-        this.accounts=accounts;
+        this.clipboard=clipboard;
     }
 
     private View.OnClickListener show(final GameViewHolder personViewHolder, final int i)
@@ -86,7 +74,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.GameViewHolder>{
                                 db.delete(accounts.get(i).getId());
 
                                 //update the interface
-                                ManageFragment.rv.setAdapter(new RVAdapter(db.read(),rv));
+                                ManageFragment.rv.setAdapter(new RVAdapter(db.read(), rv, clipboard));
 
                                 //show the confirmation snackbar
                                 final Snackbar a = Snackbar.make(rv, v.getResources().getString(R.string.delete_confirmation), Snackbar.LENGTH_LONG);
@@ -95,7 +83,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.GameViewHolder>{
                                     public void onClick(View v) {
                                         db.create(undo);
                                         a.dismiss();
-                                        rv.setAdapter(new RVAdapter(db.read(), rv));
+                                        rv.setAdapter(new RVAdapter(db.read(), rv, a));
                                         db.closeDB();
                                     }
                                 });
@@ -111,11 +99,13 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.GameViewHolder>{
             @Override
             public void onClick(View v) {
                 if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
-                    android.text.ClipboardManager clipboard = (android.text.ClipboardManager) a;
+                    android.text.ClipboardManager clipboard = (android.text.ClipboardManager)
+                            RVAdapter.this.clipboard;
                     clipboard.setText(accounts.get(i).getPassword());
                 } else {
                     try {
-                        android.content.ClipboardManager clipboard = (android.content.ClipboardManager) a;
+                        android.content.ClipboardManager clipboard =
+                                (android.content.ClipboardManager) RVAdapter.this.clipboard;
                         android.content.ClipData clip = android.content.ClipData.newPlainText("Copied Password", accounts.get(i).getPassword());
                         clipboard.setPrimaryClip(clip);
                     }

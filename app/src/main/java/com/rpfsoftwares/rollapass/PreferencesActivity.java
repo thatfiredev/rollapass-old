@@ -53,7 +53,7 @@ public class PreferencesActivity extends AppCompatActivity implements GoogleApiC
     private DatabaseHelper db;
     private CoordinatorLayout fl;
     private EditText txtPassword;
-    String []attempts;
+    private String []attempts;
 
     //Used by the Drive API
     private GoogleApiClient mGoogleApiClient;
@@ -121,12 +121,9 @@ public class PreferencesActivity extends AppCompatActivity implements GoogleApiC
         switch (mPosition)
         {
             case 0://Password Length
-                final String []tamanhos=new String[4];
-                tamanhos[0]=""+8;
-                tamanhos[1]=""+12;
-                tamanhos[2]=""+16;
-                tamanhos[3]=""+24;
-                ArrayAdapter Len = new ArrayAdapter<String>(PreferencesActivity.this,R.layout.list_black_text,R.id.list_content,tamanhos);
+                final String []tamanhos=new String [] {8+"", 12+"", 16+"", 24+""};
+                ArrayAdapter Len = new ArrayAdapter<String>(PreferencesActivity.this,
+                        R.layout.list_black_text,R.id.list_content,tamanhos);
                 new AlertDialog.Builder(PreferencesActivity.this)
                         //.setTitle(getResources().getString(R.string.preferences1))
                 .setAdapter(Len,
@@ -136,17 +133,16 @@ public class PreferencesActivity extends AppCompatActivity implements GoogleApiC
                                 SharedPreferences.Editor edit = pref.edit();
                                 edit.putInt("plength", Integer.parseInt(tamanhos[which]));
                                 edit.commit();
-                                MainActivity.length= Integer.parseInt(tamanhos[which]);
                                 customListViewValuesArr.get(0).setSubtitle(tamanhos[which]);
-                                adapter=new PreferencesAdapter(customListView, customListViewValuesArr, res);
+                                adapter=new PreferencesAdapter(customListView,
+                                        customListViewValuesArr, res);
                                 list.setAdapter(adapter);
                             }
                         })
                 .show();
                 break;
             case 1://Change Master Password
-                LayoutInflater inflater = this.getLayoutInflater();
-                View dialogView=inflater.inflate(R.layout.edittext,null);
+                View dialogView=getLayoutInflater().inflate(R.layout.edittext, null);
                 txtPassword=(EditText)dialogView.findViewById(R.id.txtMasterPassword);
                 new AlertDialog.Builder(PreferencesActivity.this)
                         .setMessage(R.string.master_pass3)
@@ -159,13 +155,15 @@ public class PreferencesActivity extends AppCompatActivity implements GoogleApiC
                                 String Master=db.getMasterPassword();
                                 if(txtPassword.getText().toString().equals(Master))
                                 {
-                                    Intent in= new Intent(PreferencesActivity.this,MasterPasswordActivity.class);
+                                    Intent in= new Intent(PreferencesActivity.this,
+                                            MasterPasswordActivity.class);
                                     startActivity(in);
                                     finish();
                                 }
                                 else
                                 {
-                                    Snackbar.make(fl,getString(R.string.pass_wrong), Snackbar.LENGTH_LONG).show();
+                                    Snackbar.make(fl,getString(R.string.pass_wrong), Snackbar.LENGTH_LONG)
+                                            .show();
                                     db.closeDB();
                                 }
                             }
@@ -179,12 +177,9 @@ public class PreferencesActivity extends AppCompatActivity implements GoogleApiC
                         .show();
                 break;
             case 2: //Delete All Data
-                final int [] att= new int[4];
-                att[0]=99999;
-                att[1]=3;
-                att[2]=5;
-                att[3]=10;
-                ArrayAdapter Atte = new ArrayAdapter<String>(PreferencesActivity.this,R.layout.list_black_text,R.id.list_content,attempts);
+                final int [] att= new int[] { 99999, 3, 5,  10};
+                ArrayAdapter Atte = new ArrayAdapter<String>(PreferencesActivity.this,
+                        R.layout.list_black_text,R.id.list_content,attempts);
                 new AlertDialog.Builder(PreferencesActivity.this)
                         //.setTitle(getResources().getString(R.string.preferences1))
                         .setAdapter(Atte,
@@ -195,18 +190,20 @@ public class PreferencesActivity extends AppCompatActivity implements GoogleApiC
                                         edit.putInt("dattempts", att[which]);
                                         edit.commit();
                                         if(which==0)
-                                            customListViewValuesArr.get(2).setSubtitle(attempts[which]);
+                                            customListViewValuesArr.get(2)
+                                                    .setSubtitle(attempts[which]);
                                         else
-                                            customListViewValuesArr.get(2).setSubtitle(getResources().getString(R.string.preferences5) + " "+attempts[which]);
-                                        adapter=new PreferencesAdapter(customListView, customListViewValuesArr, res);
+                                            customListViewValuesArr.get(2)
+                                                    .setSubtitle(getResources().getString(R.string.preferences5) + " "+attempts[which]);
+                                        adapter=new PreferencesAdapter(customListView,
+                                                customListViewValuesArr, res);
                                         list.setAdapter(adapter);
                                     }
                                 })
                         .show();
                 break;
             case 3: //Export Saved Passwords
-                inflater = this.getLayoutInflater();
-                dialogView=inflater.inflate(R.layout.edittext,null);
+                dialogView=getLayoutInflater().inflate(R.layout.edittext,null);
                 txtPassword=(EditText)dialogView.findViewById(R.id.txtMasterPassword);
                 new AlertDialog.Builder(PreferencesActivity.this)
                         .setMessage(R.string.master_pass3)
@@ -219,7 +216,8 @@ public class PreferencesActivity extends AppCompatActivity implements GoogleApiC
                                 String master=db.getMasterPassword();
                                 if(txtPassword.getText().toString().equals(master))
                                 {
-                                    String []optionsArray=getResources().getStringArray(R.array.export_options);
+                                    String []optionsArray=getResources()
+                                            .getStringArray(R.array.export_options);
                                     ArrayAdapter optionsAdapter= new ArrayAdapter<String>(PreferencesActivity.this,
                                             R.layout.list_black_text,R.id.list_content,optionsArray);
                                     new AlertDialog.Builder(PreferencesActivity.this)
@@ -241,7 +239,8 @@ public class PreferencesActivity extends AppCompatActivity implements GoogleApiC
                                 }
                                 else
                                 {
-                                    Snackbar.make(fl,getString(R.string.pass_wrong), Snackbar.LENGTH_LONG).show();
+                                    Snackbar.make(fl,getString(R.string.pass_wrong), Snackbar.LENGTH_LONG)
+                                            .show();
                                     db.closeDB();
                                 }
                             }
@@ -270,7 +269,8 @@ public class PreferencesActivity extends AppCompatActivity implements GoogleApiC
                 if (!root.exists()) {
                     root.mkdirs();
                 }
-                File ficheiro = new File(root, new SimpleDateFormat("dd-MM-yyyy_HH:mm").format(new Date())+".txt");
+                File ficheiro = new File(root, new SimpleDateFormat("dd-MM-yyyy_HH:mm")
+                        .format(new Date())+".txt");
                 FileWriter writer = new FileWriter(ficheiro);
                 db = new DatabaseHelper(this);
                 writer.append(db.export());
@@ -285,20 +285,6 @@ public class PreferencesActivity extends AppCompatActivity implements GoogleApiC
         }
         else
             Snackbar.make(fl, getString(R.string.unmounted), Snackbar.LENGTH_LONG).show();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     //Used to export passwords to Drive

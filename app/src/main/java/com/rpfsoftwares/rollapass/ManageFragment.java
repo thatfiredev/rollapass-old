@@ -22,16 +22,12 @@ public class ManageFragment extends Fragment {
     public static RecyclerView rv;
     private LinearLayoutManager llm;
     private DatabaseHelper db;
-    public static FloatingActionButton FAB;
+    public static FloatingActionButton fab;
     private CoordinatorLayout fl;
     private EditText txtPassword,txtWebsite,txtUsername;
+    private Object clipboard;
 
     public ManageFragment() {
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -41,15 +37,16 @@ public class ManageFragment extends Fragment {
 
         rv = (RecyclerView)rootView.findViewById(R.id.rv);
         fl = (CoordinatorLayout) rootView.findViewById(R.id.fl);
-        FAB = (FloatingActionButton) rootView.findViewById(R.id.fab);
+        fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
 
         rv.setHasFixedSize(true);
 
-        FAB.hide();
+        fab.hide();
+        clipboard =getActivity().getSystemService(Context.CLIPBOARD_SERVICE); //getting the clipboard service
 
         //Show the Add Existing Account Dialog
         // on Fab's Click
-        FAB.setOnClickListener(new View.OnClickListener() {
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -66,7 +63,7 @@ public class ManageFragment extends Fragment {
                             public void onClick(DialogInterface dialog, int which) {
                                 Account account = new Account(txtWebsite.getText().toString(), txtUsername.getText().toString(), txtPassword.getText().toString());
                                 db.create(account);
-                                ManageFragment.rv.setAdapter(new RVAdapter(db.read(), ManageFragment.rv));
+                                ManageFragment.rv.setAdapter(new RVAdapter(db.read(), ManageFragment.rv, clipboard));
                                 db.closeDB();
                                 final Snackbar a = Snackbar.make(fl, getString(R.string.save_confirmation), Snackbar.LENGTH_SHORT);
                                 a.show();
@@ -86,20 +83,32 @@ public class ManageFragment extends Fragment {
         rv.setLayoutManager(llm);
 
         db = new DatabaseHelper(getContext()); //open the database onnection
-        Object a=getActivity().getSystemService(Context.CLIPBOARD_SERVICE); //getting the clipboard service
 
         //loading accounts on the interface
         if(db.read().size()>0)
-            rv.setAdapter(new RVAdapter(db.read(),rv,a));
+            rv.setAdapter(new RVAdapter(db.read(), rv, clipboard));
 
         db.closeDB(); //close the database connection
+
+        //Hide the FloatingActionButton when user scrolls down
+        rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if(dy>0)
+                    fab.hide();
+                else
+                    fab.show();
+            }
+        });
+
         return rootView;
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        FAB.hide();
+        fab.hide();
     }
 }
 
