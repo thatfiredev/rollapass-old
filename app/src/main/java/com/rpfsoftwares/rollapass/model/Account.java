@@ -1,6 +1,12 @@
-package com.rpfsoftwares.rollapass;
+package com.rpfsoftwares.rollapass.model;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+
+@Entity
 public class Account {
+    @PrimaryKey(autoGenerate = true)
     private int id;
     private String website;
     private String username;
@@ -13,6 +19,7 @@ public class Account {
                 password +"    ";
     }
 
+    @Ignore
     public Account(int id, String website, String username, String password) {
         this.id = id;
         this.website = website;
